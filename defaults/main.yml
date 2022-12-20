@@ -1,0 +1,85 @@
+---
+# defaults file for ansible-role-win-localusers
+
+# @var win_path_seperator:description: backslash in variable for easy handling
+win_path_seperator: '\'
+
+# @var win_local_groups_add_list:description: >
+# Specify a list of local groups to be added
+#
+# win_local_groups_add_list:
+#
+#  - { name: "group1", description: "desc1" }
+#
+#  - { name: "group2", description: "desc2" }
+#
+#  - { name: "group3", description: "desc3" }
+# @end
+win_local_groups_add_list: []
+
+# @var win_local_groups_remove_list:description: >
+# Specify a list of local groups to be removed
+#
+# win_local_groups_remove_list:
+#
+#  - "group1"
+#
+#  - "group2"
+#
+#  - "group3"
+#
+# @end
+win_local_groups_remove_list: []
+
+
+# @var win_local_users_add_list:description: >
+# Specify a list of local users to be added
+#
+# win_local_users_add_list:
+#
+#  - { name: "user1", description: "desc1", fullname: "", password: "", password_expired: false, password_never_expires: false }
+#
+#  - { name: "user2", description: "desc2" }
+#
+#  - { name: "user3", description: "desc3" }
+#
+# @end
+win_local_users_add_list: []
+
+# @var win_local_users_remove_list:description: >
+# Specify a list of local users to be removed
+#
+# win_local_users_remove_list:
+#
+#  - "user1"
+#
+#  - "user2"
+#
+#  - "user3"
+#
+# @end
+win_local_users_remove_list: []
+
+# @var win_local_admin_group_add_to_list:description: Specifies a list of accounts to be added to local admin group
+win_local_admin_group_add_to_list: []
+
+# @var win_local_admin_group_remove_from_list:description: Specifies a list of accounts to be removed from local admin group
+win_local_admin_group_remove_from_list: []
+
+# @var win_local_user_group_add_to_list:description: Specifies a list of accounts to be added to local user group
+win_local_user_group_add_to_list: []
+
+# @var win_local_user_group_remove_from_list:description: Specifies a list of accounts to be removed from local user group
+win_local_user_group_remove_from_list: []
+
+# @var win_local_backup_group_add_to_list:description: Specifies a list of accounts to be added to local backup operator group
+win_local_backup_group_add_to_list: []
+
+# @var win_local_backup_group_remove_from_list:description: Specifies a list of accounts to be removed from local backup operator group
+win_local_backup_group_remove_from_list: []
+
+# @var win_local_rdp_group_add_to_list:description: Specifies a list of accounts to be added to local remote desktop group
+win_local_rdp_group_add_to_list: []
+
+# @var win_local_rdp_group_remove_from_list:description: Specifies a list of accounts to be removed from local remote desktop group
+win_local_rdp_group_remove_from_list: []

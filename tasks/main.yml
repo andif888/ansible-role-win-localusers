@@ -1,0 +1,153 @@
+---
+# tasks file for ansible-role-win-localusers
+
+- name: Get local admin group name
+  ansible.windows.win_shell: |
+    $groupname = ([System.Security.Principal.SecurityIdentifier]'S-1-5-32-544').Translate( [System.Security.Principal.NTAccount]).Value
+    write-host $groupname
+  register: win_local_admin_group_name_result
+  changed_when: false
+
+- name: Get local user group name
+  ansible.windows.win_shell: |
+    $groupname = ([System.Security.Principal.SecurityIdentifier]'S-1-5-32-545').Translate( [System.Security.Principal.NTAccount]).Value
+    write-host $groupname
+  register: win_local_user_group_name_result
+  changed_when: false
+
+- name: Get local backup operator group name
+  ansible.windows.win_shell: |
+    $groupname = ([System.Security.Principal.SecurityIdentifier]'S-1-5-32-551').Translate( [System.Security.Principal.NTAccount]).Value
+    write-host $groupname
+  register: win_local_backup_group_name_result
+  changed_when: false
+
+- name: Get local remote desktop group name
+  ansible.windows.win_shell: |
+    $groupname = ([System.Security.Principal.SecurityIdentifier]'S-1-5-32-555').Translate( [System.Security.Principal.NTAccount]).Value
+    write-host $groupname
+  register: win_local_rdp_group_name_result
+  changed_when: false
+
+- name:  Debug local admin group name result
+  ansible.builtin.debug:
+    msg: "{{ win_local_admin_group_name_result.stdout.split(win_path_seperator)[-1] | trim }}"
+
+- name:  Debug local user group name result
+  ansible.builtin.debug:
+    msg: "{{ win_local_user_group_name_result.stdout.split(win_path_seperator)[-1] | trim }}"
+
+- name:  Debug local backup group name result
+  ansible.builtin.debug:
+    msg: "{{ win_local_backup_group_name_result.stdout.split(win_path_seperator)[-1] | trim }}"
+
+- name:  Debug local remote desktop group name result
+  ansible.builtin.debug:
+    msg: "{{ win_local_rdp_group_name_result.stdout.split(win_path_seperator)[-1] | trim }}"
+
+- name: Set fact local admin group
+  ansible.builtin.set_fact:
+    win_local_admin_group_name: "{{ win_local_admin_group_name_result.stdout.split(win_path_seperator)[-1] | trim }}"
+
+- name: Set fact local user group
+  ansible.builtin.set_fact:
+    win_local_user_group_name: "{{ win_local_user_group_name_result.stdout.split(win_path_seperator)[-1] | trim }}"
+
+- name: Set fact local backup group
+  ansible.builtin.set_fact:
+    win_local_backup_group_name: "{{ win_local_backup_group_name_result.stdout.split(win_path_seperator)[-1] | trim }}"
+
+- name: Set fact local remote desktop group
+  ansible.builtin.set_fact:
+    win_local_rdp_group_name: "{{ win_local_rdp_group_name_result.stdout.split(win_path_seperator)[-1] | trim }}"
+
+- name: Add local groups
+  ansible.windows.win_group:
+    name: "{{ item.name }}"
+    description: "{{ item.description }}"
+    state: present
+  loop: "{{ win_local_groups_add_list }}"
+  when: win_local_groups_add_list | length > 0
+
+- name: Remove local groups
+  ansible.windows.win_group:
+    name: "{{ item }}"
+    state: absent
+  loop: "{{ win_local_groups_remove_list }}"
+  when: win_local_groups_remove_list | length > 0
+
+- name: Add local users
+  ansible.windows.win_user:
+    description: "{{ item.description | default(omit) }}"
+    fullname: "{{ item.fullname | default(omit) }}"
+    name: "{{ item.name }}"
+    password: "{{ item.password  | default(omit) }}"
+    password_expired: "{{ item.password_expired | default(false) }}"
+    password_never_expires: "{{ item.password_never_expires | default( false) }}"
+    state: present
+  loop: "{{ win_local_users_add_list }}"
+  when: win_local_users_add_list | length > 0
+
+- name: Remove local users
+  ansible.windows.win_user:
+    name: "{{ item }}"
+    state: absent
+  loop: "{{ win_local_users_remove_list }}"
+  when: win_local_users_remove_list | length > 0
+
+
+- name: Add to local admin group
+  ansible.windows.win_group_membership:
+    members: "{{ win_local_admin_group_add_to_list }}"
+    name: "{{ win_local_admin_group_name }}"
+    state: present
+  when: win_local_admin_group_add_to_list | length > 0
+
+- name: Remove from local admin group
+  ansible.windows.win_group_membership:
+    members: "{{ win_local_admin_group_remove_from_list }}"
+    name: "{{ win_local_admin_group_name }}"
+    state: absent
+  when: win_local_admin_group_remove_from_list | length > 0
+
+- name: Add to local user group
+  ansible.windows.win_group_membership:
+    members: "{{ win_local_user_group_add_to_list }}"
+    name: "{{ win_local_user_group_name }}"
+    state: present
+  when: win_local_user_group_add_to_list | length > 0
+
+- name: Remove from local user group
+  ansible.windows.win_group_membership:
+    members: "{{ win_local_user_group_remove_from_list }}"
+    name: "{{ win_local_user_group_name }}"
+    state: absent
+  when: win_local_user_group_remove_from_list | length > 0
+
+- name: Add to local backup group
+  ansible.windows.win_group_membership:
+    members: "{{ win_local_backup_group_add_to_list }}"
+    name: "{{ win_local_backup_group_name }}"
+    state: present
+  when: win_local_backup_group_add_to_list | length > 0
+
+- name: Remove from local backup group
+  ansible.windows.win_group_membership:
+    members: "{{ win_local_backup_group_remove_from_list }}"
+    name: "{{ win_local_backup_group_name }}"
+    state: absent
+  when: win_local_backup_group_remove_from_list | length > 0
+
+- name: Add to local rdp group
+  ansible.windows.win_group_membership:
+    members: "{{ win_local_rdp_group_add_to_list }}"
+    name: "{{ win_local_rdp_group_name }}"
+    state: present
+  when: win_local_rdp_group_add_to_list | length > 0
+
+- name: Remove from local rdp group
+  ansible.windows.win_group_membership:
+    members: "{{ win_local_rdp_group_remove_from_list }}"
+    name: "{{ win_local_rdp_group_name }}"
+    state: absent
+  when: win_local_rdp_group_remove_from_list | length > 0
